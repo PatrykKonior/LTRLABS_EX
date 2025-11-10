@@ -60,3 +60,43 @@ Encje w projekcie definiuję jako interfejsy z typem `number` dla wartości licz
 ---
 
 ## Odpowiedź na drugie zadanie
+
+### Implementacja
+
+Kod został zorganizowany modułowo, gdzie każda funkcja realizuje ściśle określoną odpowiedzialność:
+
+calculateItemNetTotal - oblicza net_total pozycji na podstawie net_price i quantity.
+
+calculateItemTotal - oblicza wartość brutto pozycji total, korzystając z net_total i procentowej stawki podatku; umożliwia ujemny podatek (np. rabaty).
+
+calculateOrderNetTotal - sumuje wartości net_total wszystkich pozycji, walidując nieujemność i obecność.
+
+calculateOrderTax - sumuje podatek na podstawie net_total i podatku procentowego z walidacją poprawności danych.
+
+calculateOrderTotals - funkcja agregująca, która wywołuje powyższe obliczenia, uzupełniając całe zamówienie o brakujące wartości finansowe.
+
+### Testy i TDD
+
+Wszystkie funkcje posiadają kompletne testy jednostkowe, obejmujące:
+
+- typowe przypadki i wartości brzegowe, np. zero, duże liczby, ułamki
+
+- sytuacje niepoprawne – sprawdzenie błędów dla ujemnych i brakujących wartości,
+
+- obsługę ujemnych stawek podatku (korekty, rabaty)
+
+Projekt realizowany był zgodnie z metodyką Test-Driven Development (TDD):
+
+- Najpierw powstawały testy dla danej funkcji (również brzegowe).
+
+- Następnie kod był implementowany tak, aby przechodził te testy.
+
+- Testy gwarantują odporność na błędy, łatwą rozbudowę i jasne zachowanie funkcji.
+
+### Architektura projektu
+
+- Każda funkcja została umieszczona w osobnym pliku w src/services/, co zwiększa modularność, czytelność i umożliwia łatwe testowanie.
+
+- Plik src/index.ts służy jako centralny punkt eksportu funkcji, ułatwiając importy i rozwój projektu.
+
+- Struktura projektu ułatwia skalowanie i dodawanie kolejnych funkcjonalności.
