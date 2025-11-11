@@ -10,7 +10,9 @@ export function calculateItemTotal(
   if (item.net_total < 0) {
     throw new Error('net_total nie może być ujemne');
   }
-  // Podatek może być zarówno dodatni jak i ujemny:
+  if (taxRate < 0) {
+    throw new Error('taxRate nie może być ujemny');
+  }
   const total = item.net_total * (1 + taxRate / 100);
   return { ...item, total };
 }
