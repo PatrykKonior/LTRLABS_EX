@@ -20,15 +20,21 @@ Należy obliczyć wartość netto i brutto pozycji oraz całego zamówienia, uwz
 
 1. Zainstaluj zależności:
 
+```bash
 npm install
+```
 
 2. Uruchom testy:
 
+```bash
 npm test
+```
 
 3. Opcjonalnie skompiluj projekt:
 
+```bash
 npm run build
+```
 
 ---
 
@@ -44,14 +50,16 @@ npm run build
 
 ### Typy w bazie danych
 
-Wszystkie wartości finansowe (`net_total`, `tax`, `total`, `net_price`) przechowywane są jako decimal(15,4),
-co oznacza maksymalnie 15 cyfr z 4 miejscami po przecinku.  
-Pole `quantity` przechowuje jako integer, ponieważ reprezentuje liczbę całkowitą sztuk.
+Wszystkie wartości finansowe (net_total, tax, total, net_price) przechowuję jako NUMERIC(19,4),
+czyli liczby dziesiętne z maksymalnie 19 cyframi, z czego 4 po przecinku.
+Pole quantity przechowuję jako INTEGER, ponieważ reprezentuje liczbę całkowitych sztuk towaru.
 
 ### Dlaczego?
 
-- Typ `decimal(15,4)` zapewnia precyzję niezbędną do prawidłowych obliczeń finansowych, unikając błędów zaokrągleń typowych dla typów zmiennoprzecinkowych (float/double).
-- Typ `integer` jest naturalny dla ilości rzeczywistych sztuk produktu.
+- Typ NUMERIC(19,4) w PostgreSQL zapewnia wysoką precyzję niezbędną do obliczeń finansowych i eliminuje błędy zaokrągleń charakterystyczne dla typów zmiennoprzecinkowych (FLOAT, DOUBLE).
+  Cztery miejsca po przecinku pozwalają bezpiecznie wykonywać obliczenia i dopiero w prezentacji zaokrąglać do dwóch miejsc (groszy).
+
+- Typ INTEGER jest naturalny dla ilości sztuk, które z definicji są wartościami całkowitymi.
 
 ### Implementacja w TypeScript
 
@@ -65,15 +73,15 @@ Encje w projekcie definiuję jako interfejsy z typem `number` dla wartości licz
 
 Kod został zorganizowany modułowo, gdzie każda funkcja realizuje ściśle określoną odpowiedzialność:
 
-calculateItemNetTotal - oblicza net_total pozycji na podstawie net_price i quantity.
+- calculateItemNetTotal - oblicza net_total pozycji na podstawie net_price i quantity.
 
-calculateItemTotal - oblicza wartość brutto pozycji total, korzystając z net_total i procentowej stawki podatku; umożliwia ujemny podatek (np. rabaty).
+- calculateItemTotal - oblicza wartość brutto pozycji total, korzystając z net_total i procentowej stawki podatku; umożliwia ujemny podatek (np. rabaty).
 
-calculateOrderNetTotal - sumuje wartości net_total wszystkich pozycji, walidując nieujemność i obecność.
+- calculateOrderNetTotal - sumuje wartości net_total wszystkich pozycji, walidując nieujemność i obecność.
 
-calculateOrderTax - sumuje podatek na podstawie net_total i podatku procentowego z walidacją poprawności danych.
+- calculateOrderTax - sumuje podatek na podstawie net_total i podatku procentowego z walidacją poprawności danych.
 
-calculateOrderTotals - funkcja agregująca, która wywołuje powyższe obliczenia, uzupełniając całe zamówienie o brakujące wartości finansowe.
+- calculateOrderTotals - funkcja agregująca, która wywołuje powyższe obliczenia, uzupełniając całe zamówienie o brakujące wartości finansowe.
 
 ### Testy i TDD
 
@@ -100,3 +108,5 @@ Projekt realizowany był zgodnie z metodyką Test-Driven Development (TDD):
 - Plik src/index.ts służy jako centralny punkt eksportu funkcji, ułatwiając importy i rozwój projektu.
 
 - Struktura projektu ułatwia skalowanie i dodawanie kolejnych funkcjonalności.
+
+### Twórca: Patryk Konior
